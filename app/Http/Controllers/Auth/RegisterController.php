@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\EmailVerificationNotification;
 use Illuminate\Http\Request;
 
 use App\Http\Requests\Auth\RegisterRequest;
@@ -30,6 +31,8 @@ class RegisterController extends Controller
         $success['token'] = $user->createToken('user', ['app:all'])->plainTextToken;
         $success['name'] = $user->first_name;
         $success['success'] = true;
+        // send notification for verify email
+        $user->notify(new EmailVerificationNotification());
 
         return response()->json($success, 200);
     }
